@@ -1,3 +1,11 @@
-// Define any application specific (inc. behavioural) containers
-// for example, a container for pages or elements that inject data
-// and behavour into the visual aspects you define in a component.
+import React from 'react';
+
+class Home extends React.Component {
+  render() {
+    return (
+      <a href="/monzoLogin">Login with monzo</a>
+    );
+  }
+}
+
+export default Home;

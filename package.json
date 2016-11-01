@@ -67,6 +67,7 @@
     "express": "^4.14.0",
     "isomorphic-ensure": "^1.0.1",
     "isomorphic-fetch": "^2.2.1",
+    "monzo-api": "^1.0.2",
     "morgan": "^1.7.0",
     "path": "^0.12.7",
     "react": "^15.2.0",

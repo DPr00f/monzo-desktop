@@ -7,7 +7,12 @@ import { renderToString } from 'react-dom/server';
 import { RouterContext, match } from 'react-router';
 import routes from './src/routes';
 import appBehaviour from './src/reducers';
+import MonzoApi from 'monzo-api';
+const clientId = '---';
+const clientSecret = '---';
 const app = express();
+const monzoApi = new MonzoApi(clientId, clientSecret);
+monzoApi.redirectUrl = 'http://127.0.0.1:8080/monzoReturn';
 
 /** Returns a rendered string including your initial state
   / and initial render.
@@ -18,15 +23,15 @@ function renderFullPage(html, initialState) {
     <html>
       <head>
         <meta charset="utf-8" />
-        <title>Redux Universal Example</title>
+        <title>Monzo Desktop</title>
         <link type="text/css" rel="stylesheet" href="dist/main.css" />
       </head>
       <body>
         <div id="root-app">${html}</div>
-          <script>
-            window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
-          </script>
-          <script async type="application/javascript" src="dist/bundle.js"></script>
+        <script>
+          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
+        </script>
+        <script async type="application/javascript" src="dist/bundle.js"></script>
       </body>
     </html>`;
 }
@@ -69,5 +74,8 @@ app.use('/dist', express.static(`${__dirname}/dist`));
 app.use('/images', express.static(`${__dirname}/images`));
 // Register middleware.
 app.use(logger('combined'));
+app.get('/monzoLogin', (req, res) => {
+  res.redirect(monzoApi.authorizationUrl);
+});
 app.use(handleRender);
 export default app;
