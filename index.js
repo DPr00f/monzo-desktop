@@ -4,6 +4,7 @@
 require('babel-core/register');
 const logger = require('winston');
 const server = require('./server');
+
 const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () => {
