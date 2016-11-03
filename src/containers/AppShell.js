@@ -1,11 +1,9 @@
 // Define the application shell
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
-class AppShell extends React.Component {
-  static get propTypes() {
-    return {
-      children: PropTypes.element
-    };
+class AppShell extends Component {
+  static propTypes = {
+    children: PropTypes.element
   }
 
   render() {

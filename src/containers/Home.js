@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 
-class Home extends React.Component {
-  static get propTypes() {
-    return {
-      authenticated: React.PropTypes.bool
-    };
+class Home extends Component {
+  static propTypes = {
+    authenticated: PropTypes.bool
   }
 
   renderLoginButton() {
