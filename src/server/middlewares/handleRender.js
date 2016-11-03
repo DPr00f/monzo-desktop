@@ -1,5 +1,5 @@
 import React from 'react';
-import { applyMiddleware, createStore } from 'redux';
+import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
 import { RouterContext, match } from 'react-router';
