@@ -19,7 +19,7 @@ class MonzoController {
       parsed.state = req.session.monzoStateToken;
       redUrl = `${split[0]}?${qs.stringify(parsed)}`;
     } else {
-      req.session.monzoStateToken = this.api._stateToken;
+      req.session.monzoStateToken = this.api.stateToken;
     }
     req.session.redirectUrl = redUrl;
     res.redirect('/redirect');
