@@ -71,7 +71,7 @@
     "isomorphic-ensure": "^1.0.1",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.16.6",
-    "monzo-api": "^1.0.2",
+    "monzo-api": "^1.0.3",
     "morgan": "^1.7.0",
     "path": "^0.12.7",
     "react": "^15.2.0",

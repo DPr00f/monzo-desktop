@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
 import { RouterContext, match } from 'react-router';
@@ -42,7 +42,9 @@ export default (req, res) => {
     }
 
     // Initialise our redux store with out reducers.
-    const store = createStore(appBehaviour);
+    const store = createStore(appBehaviour, {
+      authenticated: !!global.app.locals.authenticated
+    });
     // Initialise the componenet with the store
     // and rendered properties.
     const InitialComponent = (

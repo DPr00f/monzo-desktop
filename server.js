@@ -28,7 +28,7 @@ app.use('/images', express.static(`${__dirname}/images`));
 app.use(logger('combined'));
 app.use((req, res, next) => {
   if (req.session.user) {
-    app.locals.logged = true;
+    app.locals.authenticated = true;
   }
   next();
 });
