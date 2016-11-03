@@ -13,20 +13,13 @@ const loggerMiddleware = createLogger();
 
 // eslint-disable-next-line no-underscore-dangle
 const initialState = window.__INITIAL_STATE__;
-// const store = createStore(
-//   rootReducer,
-//   initialState,
-//   applyMiddleware(
-//     thunkMiddleware, // lets us dispatch() functions
-//     loggerMiddleware // neat middleware that logs actions
-//   )
-// );
 
 const createStoreWithMiddleware = applyMiddleware(thunkMiddleware, loggerMiddleware)(createStore);
+const store = createStoreWithMiddleware(reducers, initialState);
 
 match({ history: browserHistory, routes }, (error, redirectLocation, renderProps) => {
   render(
-    <Provider store={createStoreWithMiddleware(reducers, initialState)}>
+    <Provider store={store}>
       <Router {...renderProps} />
     </Provider>,
     document.getElementById('root-app')
