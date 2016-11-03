@@ -40,8 +40,7 @@ class MonzoController {
   }
 
   authorization(req, res) {
-    this.api._stateToken = req.session.monzoStateToken;
-    this.api.authenticate(req.query.code, req.query.state)
+    this.api.authenticate(req.query.code, req.query.state, req.session.monzoStateToken)
             .then((monzoReply) => {
               delete req.session.monzoStateToken;
               delete req.session.redirectUrl;
