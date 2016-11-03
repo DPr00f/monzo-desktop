@@ -3,8 +3,6 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
 import { RouterContext, match } from 'react-router';
-import omit from 'lodash/omit';
-import merge from 'lodash/merge';
 import routes from '../../routes';
 import appBehaviour from '../../reducers';
 
@@ -30,7 +28,7 @@ function renderFullPage(html, initialState) {
     </html>`;
 }
 
-export default (req, res) => {
+export default (initialStoreStateCallback) => (req, res) => {
   // Matches the incoming request with a potential route in the react app.
   match({ routes, location: req.url }, (err, redirectLocation, renderProps) => {
     if (err) {
@@ -42,9 +40,7 @@ export default (req, res) => {
     }
 
     // Initialise our redux store with out reducers.
-    const store = createStore(appBehaviour, {
-      authenticated: !!global.app.locals.authenticated
-    });
+    const store = createStore(appBehaviour, initialStoreStateCallback(req, res));
     // Initialise the componenet with the store
     // and rendered properties.
     const InitialComponent = (
@@ -54,9 +50,7 @@ export default (req, res) => {
     );
     const componentHTML = renderToString(InitialComponent);
     // Grab the initial state from our Redux store
-    const storeState = store.getState();
-    const serverLocals = omit(global.app.locals, 'settings');
-    const initialState = merge({}, serverLocals, storeState);
+    const initialState = store.getState();
     // Send the rendered page back to the client
     // including any initial state from redux.
     res.status(200).send(renderFullPage(componentHTML, initialState));

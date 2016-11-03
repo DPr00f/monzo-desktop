@@ -2,20 +2,6 @@ import MonzoApi from 'monzo-api';
 import qs from 'querystring';
 import config from '../../../config'; // eslint-disable-line
 
-function redirectPage(redirectUrl) {
-  return `<!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="refresh" content="0;URL='${redirectUrl}'" />
-        <title>Monzo Desktop</title>
-      </head>
-      <body>
-      <p><a href="${redirectUrl}">Click here if your page doesn't automatically redirect.</a></p>
-      </body>
-    </html>`;
-}
-
 class MonzoController {
   constructor() {
     this.api = new MonzoApi(config.MONZO.CLIENT_ID, config.MONZO.CLIENT_SECRET);
