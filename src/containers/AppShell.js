@@ -8,9 +8,17 @@ class AppShell extends Component {
 
   render() {
     return (
-      <div>
-        { this.props.children }
-      </div>
+      <html lang="en">
+        <head>
+          <meta charSet="utf-8" />
+          <title>Monzo Desktop</title>
+          <link type="text/css" rel="stylesheet" href="dist/main.css" />
+        </head>
+        <body>
+          { this.props.children }
+          <script async type="application/javascript" src="dist/bundle.js"></script>
+        </body>
+      </html>
     );
   }
 }

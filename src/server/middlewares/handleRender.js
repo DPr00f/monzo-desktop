@@ -3,30 +3,12 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
 import { RouterContext, match } from 'react-router';
+import { format } from 'util';
 import routes from '../../routes';
 import appBehaviour from '../../reducers';
 
-/** Returns a rendered string including your initial state
-  / and initial render.
-  */
-function renderFullPage(html, initialState) {
-  return `
-    <!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8" />
-        <title>Monzo Desktop</title>
-        <link type="text/css" rel="stylesheet" href="dist/main.css" />
-      </head>
-      <body>
-        <div id="root-app">${html}</div>
-        <script>
-          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
-        </script>
-        <script async type="application/javascript" src="dist/bundle.js"></script>
-      </body>
-    </html>`;
-}
+const TEMPLATE = 'var __INITIAL_STATE__ = %s;';
+const DOCTYPE = '<!DOCTYPE html>';
 
 export default (initialStoreStateCallback) => (req, res) => {
   // Matches the incoming request with a potential route in the react app.
@@ -51,8 +33,10 @@ export default (initialStoreStateCallback) => (req, res) => {
     const componentHTML = renderToString(InitialComponent);
     // Grab the initial state from our Redux store
     const initialState = store.getState();
+    const script = format(TEMPLATE, JSON.stringify(initialState));
+    const html = DOCTYPE + componentHTML.replace('</head>', `<script type="application/javascript">${script}</script></head>`);
     // Send the rendered page back to the client
     // including any initial state from redux.
-    res.status(200).send(renderFullPage(componentHTML, initialState));
+    res.status(200).send(html);
   });
 };
