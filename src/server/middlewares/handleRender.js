@@ -23,7 +23,7 @@ export default (initialStoreStateCallback) => (req, res) => {
 
     // Initialise our redux store with out reducers.
     const store = createStore(appBehaviour, initialStoreStateCallback(req, res));
-    // Initialise the componenet with the store
+    // Initialise the component with the store
     // and rendered properties.
     const InitialComponent = (
       <Provider store={store} >
@@ -34,9 +34,9 @@ export default (initialStoreStateCallback) => (req, res) => {
     // Grab the initial state from our Redux store
     const initialState = store.getState();
     const script = format(TEMPLATE, JSON.stringify(initialState));
-    const html = DOCTYPE + componentHTML.replace('</head>', `<script type="application/javascript">${script}</script></head>`);
     // Send the rendered page back to the client
     // including any initial state from redux.
+    const html = DOCTYPE + componentHTML.replace('</head>', `<script type="application/javascript">${script}</script></head>`);
     res.status(200).send(html);
   });
 };
