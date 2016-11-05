@@ -5,9 +5,11 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import config from './config'; // eslint-disable-line import/default
 import redirectController from './src/server/controllers/redirect';
+import logoutController from './src/server/controllers/logout';
 import monzoController from './src/server/controllers/monzo';
 import cleanUpSession from './src/server/middlewares/cleanUpSession';
 import handleRender from './src/server/middlewares/handleRender';
+import requireAuth from './src/server/middlewares/requireAuth';
 
 const app = express();
 
@@ -32,8 +34,12 @@ app.use('/images', express.static(`${__dirname}/images`));
 // Register middleware.
 app.use(logger('combined'));
 app.get('/redirect', redirectController);
+app.get('/logout', logoutController);
 app.get('/monzoLogin', monzoController.loginPage);
 app.get('/monzoReturn', monzoController.authorization);
+app.get('/authTest', requireAuth, (req, res) => {
+  res.json({ it: 'works' });
+});
 app.use(cleanUpSession);
 app.use(handleRender(getInitialStoreState));
 

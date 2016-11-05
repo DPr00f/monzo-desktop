@@ -1,5 +1,6 @@
 import MonzoApi from 'monzo-api';
 import qs from 'querystring';
+import jwt from 'jwt-simple';
 import config from '../../../config'; // eslint-disable-line
 
 class MonzoController {
@@ -8,6 +9,11 @@ class MonzoController {
     this.api.redirectUrl = config.MONZO.REDIRECT_URL;
     this.loginPage = this.loginPage.bind(this);
     this.authorization = this.authorization.bind(this);
+  }
+
+  jwtToken(data) {
+    data.iat = Date.now();
+    return jwt.encode(data, config.JWT_SECRET);
   }
 
   loginPage(req, res) {
@@ -30,11 +36,15 @@ class MonzoController {
             .then((monzoReply) => {
               delete req.session.monzoStateToken;
               delete req.session.redirectUrl;
-              req.session.user = {
+              const monzoData = {
                 accessToken: monzoReply.access_token,
                 refreshToken: monzoReply.refresh_token
               };
-              res.redirect('/');
+              const token = this.jwtToken(monzoData);
+              // Store as a cookie as well in case we want to verify from the server side,
+              // but we'll be using the jwt token to authenticate any server side requests
+              req.session.user = token;
+              res.redirect(`/storeToken?token=${token}`);
             })
             .catch(err => {
               delete req.session.monzoStateToken;

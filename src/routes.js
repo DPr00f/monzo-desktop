@@ -19,12 +19,20 @@ if (typeof require.ensure !== 'function') {
 export default (
    // App Shell
    <Route component={AppShell} path='/'>
-    // Home Page (Index /)
     <IndexRoute getComponent={(next, cb) => {
       require.ensure([], (require) => {
         cb(null, require('./containers/Home'));
       });
     }}/>
-    // Other Pages.
+    <Route path='/storeToken' getComponent={(next, cb) => {
+      require.ensure([], (require) => {
+        cb(null, require('./containers/StoreToken'));
+      });
+    }}/>
+    <Route path='/logout' getComponent={(next, cb) => {
+      require.ensure([], (require) => {
+        cb(null, require('./containers/Logout'));
+      });
+    }}/>
   </Route>
 );

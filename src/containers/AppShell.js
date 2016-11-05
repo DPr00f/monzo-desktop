@@ -1,9 +1,21 @@
-// Define the application shell
 import React, { PropTypes, Component } from 'react';
+import { connect } from 'react-redux';
+import { localStorage } from '../utils';
+import { authenticate, deauthenticate } from '../actions';
 
 class AppShell extends Component {
   static propTypes = {
-    children: PropTypes.element
+    children: PropTypes.element,
+    authenticate: PropTypes.func,
+    deauthenticate: PropTypes.func
+  }
+
+  componentDidMount() {
+    if (localStorage.get('token')) {
+      this.props.authenticate();
+    } else {
+      this.props.deauthenticate();
+    }
   }
 
   render() {
@@ -23,5 +35,8 @@ class AppShell extends Component {
   }
 }
 
-export default AppShell;
+export default connect(null, {
+  authenticate,
+  deauthenticate
+})(AppShell);
 

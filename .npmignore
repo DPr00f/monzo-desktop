@@ -4,3 +4,4 @@ npm-debug.*
 *.swp
 coverage/
 .DS_Store
+*.private.*
