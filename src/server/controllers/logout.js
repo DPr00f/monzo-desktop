@@ -1,4 +1,11 @@
-export default (req, res, next) => {
+export default respond => (req, res, next) => {
   delete req.session.user;
-  next();
+  if (respond) {
+    res.json({
+      error: false,
+      message: 'Logout successfully'
+    });
+  } else {
+    next();
+  }
 };

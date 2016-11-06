@@ -1,20 +1,27 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { localStorage } from '../utils';
-import { authenticate, deauthenticate } from '../actions';
+import { authenticate, deauthenticate, getBalance } from '../actions';
 
 class AppShell extends Component {
   static propTypes = {
     children: PropTypes.element,
+    authenticated: PropTypes.bool,
     authenticate: PropTypes.func,
-    deauthenticate: PropTypes.func
+    deauthenticate: PropTypes.func,
+    getBalance: PropTypes.func
   }
 
   componentDidMount() {
-    if (localStorage.get('token')) {
+    const token = localStorage.get('token');
+    if (token && !this.props.authenticated) {
       this.props.authenticate();
-    } else {
+    } else if (!token && this.props.authenticated) {
       this.props.deauthenticate();
+    }
+
+    if (this.props.authenticated) {
+      this.props.getBalance();
     }
   }
 
@@ -35,8 +42,13 @@ class AppShell extends Component {
   }
 }
 
-export default connect(null, {
+function mapStateToProps(state) {
+  return { authenticated: state.authenticated };
+}
+
+export default connect(mapStateToProps, {
   authenticate,
-  deauthenticate
+  deauthenticate,
+  getBalance
 })(AppShell);
 

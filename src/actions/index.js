@@ -1,16 +1,18 @@
 import {
   AUTH_USER,
-  UNAUTH_USER
+  UNAUTH_USER,
+  GET_BALANCE
 } from './types';
 
-export const authenticate = () => {
-  return {
-    type: AUTH_USER
-  };
-};
 
-export const deauthenticate = () => {
-  return {
-    type: UNAUTH_USER
-  };
-};
+export const authenticate = () => ({
+  type: AUTH_USER
+});
+
+export const deauthenticate = () => ({
+  type: UNAUTH_USER
+});
+
+export const getBalance = () => ({
+  type: GET_BALANCE
+});

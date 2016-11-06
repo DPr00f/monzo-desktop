@@ -5,6 +5,8 @@ const injectModules = require('gulp-inject-modules');
 const mocha = require('gulp-mocha');
 const eslint = require('gulp-eslint');
 
+require('babel-core/register');
+
 gulp.task('lint', () =>
   gulp.src(['**.js', './src/**', './test/**'])
     .pipe(eslint())
@@ -21,9 +23,9 @@ gulp.task('pre-testCoverage', () => {
 });
 
 gulp.task('cover', ['pre-testCoverage'], () => {
-  return gulp.src(['test/**/*.js'])
+  return gulp.src(['test/**/*.test.js'])
     .pipe(babel())
     .pipe(injectModules())
-    .pipe(mocha({ require: ['./test/.jsdom.js'] }))
+    .pipe(mocha({ require: ['./test/testHelper.js'] }))
     .pipe(istanbul.writeReports());
 });

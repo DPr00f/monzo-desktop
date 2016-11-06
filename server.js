@@ -3,21 +3,10 @@ import express from 'express';
 import session from 'cookie-session';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import config from './config'; // eslint-disable-line import/default
-import redirectController from './src/server/controllers/redirect';
-import logoutController from './src/server/controllers/logout';
-import monzoController from './src/server/controllers/monzo';
-import cleanUpSession from './src/server/middlewares/cleanUpSession';
-import handleRender from './src/server/middlewares/handleRender';
-import requireAuth from './src/server/middlewares/requireAuth';
+import config from './config';
+import routes from './src/server/routes';
 
 const app = express();
-
-function getInitialStoreState(req) {
-  return {
-    authenticated: !!req.session.user
-  };
-}
 
 app.set('trust proxy', 1);
 app.use(bodyParser.json({ limit: '100mb' }));
@@ -28,19 +17,9 @@ app.use(session({
   secret: config.SESSION_SECRET
 }));
 
-// Register static assets to serve from server.
 app.use('/dist', express.static(`${__dirname}/dist`));
 app.use('/images', express.static(`${__dirname}/images`));
-// Register middleware.
 app.use(logger('combined'));
-app.get('/redirect', redirectController);
-app.get('/logout', logoutController);
-app.get('/monzoLogin', monzoController.loginPage);
-app.get('/monzoReturn', monzoController.authorization);
-app.get('/authTest', requireAuth, (req, res) => {
-  res.json({ it: 'works' });
-});
-app.use(cleanUpSession);
-app.use(handleRender(getInitialStoreState));
+routes(app);
 
 export default app;

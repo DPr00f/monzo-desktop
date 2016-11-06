@@ -9,6 +9,7 @@ class MonzoController {
     this.api.redirectUrl = config.MONZO.REDIRECT_URL;
     this.loginPage = this.loginPage.bind(this);
     this.authorization = this.authorization.bind(this);
+    this.getBalance = this.getBalance.bind(this);
   }
 
   jwtToken(data) {
@@ -54,6 +55,18 @@ class MonzoController {
                 message: err.message
               });
             });
+  }
+
+  getBalance(req, res) {
+    const { accessToken, refreshToken } = req.user;
+    this.api.accounts(accessToken)
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    res.json({ error: false, balance: 300 });
   }
 }
 
