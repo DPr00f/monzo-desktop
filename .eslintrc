@@ -32,6 +32,7 @@
     "browser": true,
     "sinon": true,
     "expect": true,
-    "deepFreeze": true
+    "deepFreeze": true,
+    "callMiddleWare": true
   }
 }

@@ -10,11 +10,20 @@ import {
 
 let amountOfRequests = 0;
 
-function handleAxiosResponse(response, headers) {
+export function setAmountOfRequests(value) {
+  amountOfRequests = value;
+}
+
+export function handleAxiosResponse(response, headers = {}) {
   --amountOfRequests;
   if (headers['content-type'] &&
       headers['content-type'].indexOf('application/json') > -1) {
     response = JSON.parse(response);
+  }
+  // Automatically save any refresh tokens that come from the server
+  // whether it comes as an error or not
+  if (typeof response === 'object' && response.refreshToken) {
+    store.set('token', response.refreshToken);
   }
   if (typeof response === 'object' && !response.error) {
     if (!amountOfRequests) {
@@ -26,7 +35,7 @@ function handleAxiosResponse(response, headers) {
   return response;
 }
 
-function handleAxiosRequest(data) {
+export function handleAxiosRequest(data) {
   ++amountOfRequests;
   if (amountOfRequests === 1) {
     appStore.dispatch({
@@ -36,7 +45,7 @@ function handleAxiosRequest(data) {
   return data;
 }
 
-function handleAxiosValidateStatus(status) {
+export function handleAxiosValidateStatus(status) {
   const valid = status >= 200 && status < 300;
   if (!valid) {
     appStore.dispatch({
@@ -57,6 +66,6 @@ export const axios = Axios.create({
   transformResponse: handleAxiosResponse,
   validateStatus: handleAxiosValidateStatus,
   headers: {
-    authorization: localStorage.get('token')
+    authorization: store.get('token') || 'unverified'
   }
 });

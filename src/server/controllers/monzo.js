@@ -57,16 +57,70 @@ class MonzoController {
             });
   }
 
-  getBalance(req, res) {
-    const { accessToken, refreshToken } = req.user;
+  getBalance(req, res, extraData = {}) {
+    const { accessToken } = req.user;
     this.api.accounts(accessToken)
-        .then((data) => {
-          console.log(data);
+        .then((monzoReply) => {
+          extraData.data = monzoReply;
+          res.json(extraData);
+        })
+        .catch(this.handleApiErrors.bind(this, req, res, this.getBalance));
+  }
+
+  handleApiErrors(req, res, whenReady, error) {
+    const errorResponse = error.response;
+    if (errorResponse &&
+        errorResponse.statusCode === 401 &&
+        errorResponse.body.message.indexOf('token is expired by') > -1) {
+      this.refreshToken.call(this, req, res, whenReady);
+    } else {
+      res.json({
+        error: true,
+        message: errorResponse.body
+      });
+    }
+  }
+
+  getAccounts(req, res, extraData = {}, returnPromise = false) {
+    const { accessToken } = req.user;
+    const promise = this.api.accounts(accessToken);
+    if (returnPromise) {
+      return promise;
+    }
+    promise.then((monzoReply) => {
+      extraData.data = monzoReply;
+      res.json(extraData);
+    })
+    .catch(this.refreshToken.bind(this, req, res, this.getAccounts));
+  }
+
+  refreshToken(req, res, whenReady) {
+    const { refreshToken } = req.user;
+    this.api.refreshAccess(refreshToken)
+        .then((monzoReply) => {
+          const monzoData = {
+            accessToken: monzoReply.access_token,
+            refreshToken: monzoReply.refresh_token
+          };
+          const token = this.jwtToken(monzoData);
+          req.session.user = token;
+          // Replace the user data with the new one,
+          // this way the request will continue as expected
+          // Otherwise it will just loop
+          req.user = monzoData;
+          if (whenReady) {
+            whenReady.call(this, req, res, { refreshToken: token });
+          } else {
+            res.redirect(`/storeToken?token=${token}`);
+          }
         })
         .catch((err) => {
-          console.error(err);
+          res.json({
+            error: true,
+            message: err.message,
+            logout: true
+          });
         });
-    res.json({ error: false, balance: 300 });
   }
 }
 
