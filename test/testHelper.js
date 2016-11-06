@@ -56,3 +56,19 @@ global.callMiddleWare = function callMiddleWare(middleWare, action) {
   middleWare(dispatcherFakeObject)(next)(action);
   return nextSpy;
 };
+global.getServerReqAndRes = () => {
+  return {
+    response: {
+      status: function status(value) {
+        this.statusCode = value;
+        return this;
+      },
+      json: () => {},
+      redirect: () => {}
+    },
+    request: {
+      session: {},
+      query: {}
+    }
+  };
+};
