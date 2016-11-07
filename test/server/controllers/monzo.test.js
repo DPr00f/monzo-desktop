@@ -88,7 +88,7 @@ describe('monzo Controller ::', () => {
       setTimeout(() => {
         expect(serverResponse.json).to.have.been.calledWithMatch({ error: true });
         async();
-      }, 1);
+      }, 5);
     });
   });
 
@@ -109,7 +109,7 @@ describe('monzo Controller ::', () => {
       setTimeout(() => {
         expect(serverResponse.json).to.have.been.calledWithMatch({ data: { balance: 300, currency: 'GBP' } });
         async();
-      }, 1);
+      }, 5);
     });
 
     it('should call handleApiErrors if an error occurs', (async) => {
@@ -122,7 +122,7 @@ describe('monzo Controller ::', () => {
       setTimeout(() => {
         expect(monzoController.handleApiErrors).to.have.been.calledWithMatch(serverRequest, serverResponse);
         async();
-      }, 1);
+      }, 5);
     });
   });
 });
