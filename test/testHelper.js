@@ -67,6 +67,7 @@ global.getServerReqAndRes = () => {
       redirect: () => {}
     },
     request: {
+      user: {},
       session: {},
       query: {}
     }

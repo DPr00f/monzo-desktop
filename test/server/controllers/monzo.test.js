@@ -9,10 +9,8 @@ describe('monzo Controller ::', () => {
   let serverRequest;
   let serverResponse;
   let originalMonzoApi;
-  let server;
   beforeEach(() => {
     const { response, request } = getServerReqAndRes();
-    server = sinon.fakeServer.create();
     serverRequest = request;
     serverResponse = response;
     originalMonzoApi = monzoController.api;
@@ -26,7 +24,6 @@ describe('monzo Controller ::', () => {
     serverRequest = null;
     serverResponse = null;
     monzoController.api = originalMonzoApi;
-    server.restore();
   });
 
   describe('jwtToken ::', () => {
@@ -68,7 +65,6 @@ describe('monzo Controller ::', () => {
   });
 
   describe('authorization Controller ::', () => {
-
     it('should redirect when auth is successful', (async) => {
       sinon.spy(serverResponse, 'redirect');
       serverRequest.query.code = 'sampleCode';
@@ -82,7 +78,7 @@ describe('monzo Controller ::', () => {
       }, 5);
     });
 
-    it('should redirect when auth is successful', (async) => {
+    it('should display error when auth is unsuccessful', (async) => {
       sinon.spy(serverResponse, 'json');
       serverRequest.query.code = 'sampleCode';
       serverRequest.query.state = 'sampleState';
@@ -92,7 +88,41 @@ describe('monzo Controller ::', () => {
       setTimeout(() => {
         expect(serverResponse.json).to.have.been.calledWithMatch({ error: true });
         async();
-      }, 5);
+      }, 1);
+    });
+  });
+
+  describe('getBalance ::', () => {
+    it("should fail if the accountId isn't provided", () => {
+      sinon.spy(serverResponse, 'json');
+      monzoController.getBalance(serverRequest, serverResponse);
+      expect(serverResponse.json).to.have.been.calledWithMatch({ error: true, message: 'accountID needs to be provided' });
+    });
+
+    it('should get the data and return it to the user', (async) => {
+      sinon.spy(serverResponse, 'json');
+      serverRequest.query.accountId = 'sampleId';
+      nock(API_URL)
+        .get('/balance')
+        .reply(200, { balance: 300, currency: 'GBP' });
+      monzoController.getBalance(serverRequest, serverResponse);
+      setTimeout(() => {
+        expect(serverResponse.json).to.have.been.calledWithMatch({ data: { balance: 300, currency: 'GBP' } });
+        async();
+      }, 1);
+    });
+
+    it('should call handleApiErrors if an error occurs', (async) => {
+      sinon.spy(monzoController, 'handleApiErrors');
+      serverRequest.query.accountId = 'sampleId';
+      nock(API_URL)
+        .get('/balance')
+        .reply(404, {});
+      monzoController.getBalance(serverRequest, serverResponse);
+      setTimeout(() => {
+        expect(monzoController.handleApiErrors).to.have.been.calledWithMatch(serverRequest, serverResponse);
+        async();
+      }, 1);
     });
   });
 });

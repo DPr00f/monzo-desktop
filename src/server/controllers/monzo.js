@@ -59,7 +59,15 @@ class MonzoController {
 
   getBalance(req, res, extraData = {}) {
     const { accessToken } = req.user;
-    this.api.accounts(accessToken)
+    const { accountId } = req.query;
+    if (!accountId) {
+      res.status(412).json({
+        error: true,
+        message: 'accountID needs to be provided'
+      });
+      return;
+    }
+    this.api.balance(accountId, accessToken)
         .then((monzoReply) => {
           extraData.data = monzoReply;
           res.json(extraData);
@@ -74,7 +82,7 @@ class MonzoController {
         errorResponse.body.message.indexOf('token is expired by') > -1) {
       this.refreshToken.call(this, req, res, whenReady);
     } else {
-      res.json({
+      res.status(412).json({
         error: true,
         message: errorResponse.body
       });
