@@ -73,3 +73,13 @@ global.getServerReqAndRes = () => {
     }
   };
 };
+global.whenCalled = (spyFunc, callback, callCount) => {
+  if (typeof callCount === 'undefined') {
+    callCount = spyFunc.callCount;
+  }
+  if (callCount < spyFunc.callCount) {
+    callback();
+  } else {
+    setTimeout(whenCalled.bind(global, spyFunc, callback, callCount), 1);
+  }
+};

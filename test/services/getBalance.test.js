@@ -23,10 +23,10 @@ describe('getBalance Service ::', () => {
     });
     const nextSpy = callMiddleWare(getBalance, action);
     expect(nextSpy).to.have.been.calledWith(action);
-    setTimeout(() => {
+    whenCalled(nextSpy, () => {
       expect(nextSpy).to.have.been.calledWith({ type: `${GET_BALANCE}_SUCCESS`, payload: { balance: 300 } });
       async();
-    }, 0);
+    });
   });
 
   it('dispatches GET_BALANCE_FAILED', (async) => {
@@ -34,9 +34,9 @@ describe('getBalance Service ::', () => {
     mock.onGet(urlToTest).reply(404, new Error('Mocked'));
     const nextSpy = callMiddleWare(getBalance, action);
     expect(nextSpy).to.have.been.calledWith(action);
-    setTimeout(() => {
+    whenCalled(nextSpy, () => {
       expect(nextSpy).to.have.been.calledWithMatch({ type: `${GET_BALANCE}_FAILED` });
       async();
-    }, 0);
+    });
   });
 });

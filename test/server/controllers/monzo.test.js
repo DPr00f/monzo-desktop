@@ -72,10 +72,10 @@ describe('monzo Controller ::', () => {
       serverRequest.session.monzoStateToken = 'sampleState';
       nock(API_URL).post('/oauth2/token').reply(200, { yes: 'it works !' });
       monzoController.authorization(serverRequest, serverResponse);
-      setTimeout(() => {
+      whenCalled(serverResponse.redirect, () => {
         expect(serverResponse.redirect).to.have.been.calledWith(`/storeToken?token=${serverRequest.session.user}`);
         async();
-      }, 5);
+      });
     });
 
     it('should display error when auth is unsuccessful', (async) => {
@@ -85,10 +85,10 @@ describe('monzo Controller ::', () => {
       serverRequest.session.monzoStateToken = 'sampleState';
       nock(API_URL).post('/oauth2/token').reply(404, {});
       monzoController.authorization(serverRequest, serverResponse);
-      setTimeout(() => {
+      whenCalled(serverResponse.json, () => {
         expect(serverResponse.json).to.have.been.calledWithMatch({ error: true });
         async();
-      }, 5);
+      });
     });
   });
 
@@ -106,10 +106,10 @@ describe('monzo Controller ::', () => {
         .get('/balance')
         .reply(200, { balance: 300, currency: 'GBP' });
       monzoController.getBalance(serverRequest, serverResponse);
-      setTimeout(() => {
+      whenCalled(serverResponse.json, () => {
         expect(serverResponse.json).to.have.been.calledWithMatch({ data: { balance: 300, currency: 'GBP' } });
         async();
-      }, 5);
+      });
     });
 
     it('should call handleApiErrors if an error occurs', (async) => {
@@ -119,10 +119,10 @@ describe('monzo Controller ::', () => {
         .get('/balance')
         .reply(404, {});
       monzoController.getBalance(serverRequest, serverResponse);
-      setTimeout(() => {
+      whenCalled(monzoController.handleApiErrors, () => {
         expect(monzoController.handleApiErrors).to.have.been.calledWithMatch(serverRequest, serverResponse);
         async();
-      }, 5);
+      });
     });
   });
 });
