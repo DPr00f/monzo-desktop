@@ -99,7 +99,7 @@ class MonzoController {
       extraData.data = monzoReply;
       res.json(extraData);
     })
-    .catch(this.refreshToken.bind(this, req, res, this.getAccounts));
+    .catch(this.handleApiErrors.bind(this, req, res, this.getAccounts));
   }
 
   refreshToken(req, res, whenReady) {
