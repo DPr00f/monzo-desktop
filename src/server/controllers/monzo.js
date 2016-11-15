@@ -10,6 +10,7 @@ class MonzoController {
     this.loginPage = this.loginPage.bind(this);
     this.authorization = this.authorization.bind(this);
     this.getBalance = this.getBalance.bind(this);
+    this.getAccounts = this.getAccounts.bind(this);
   }
 
   jwtToken(data) {
@@ -90,6 +91,9 @@ class MonzoController {
   }
 
   getAccounts(req, res, extraData = {}, returnPromise = false) {
+    if (typeof extraData === 'function') { // It's the next function, and we don't want it
+      extraData = {};
+    }
     const { accessToken } = req.user;
     const promise = this.api.accounts(accessToken);
     if (returnPromise) {

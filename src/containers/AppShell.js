@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { localStorage } from '../utils';
-import { authenticate, deauthenticate, getBalance } from '../actions';
+import { authenticate, deauthenticate, getAccounts } from '../actions';
 
 class AppShell extends Component {
   static propTypes = {
@@ -9,7 +9,7 @@ class AppShell extends Component {
     authenticated: PropTypes.bool,
     authenticate: PropTypes.func,
     deauthenticate: PropTypes.func,
-    getBalance: PropTypes.func
+    getAccounts: PropTypes.func
   }
 
   componentDidMount() {
@@ -20,8 +20,8 @@ class AppShell extends Component {
       this.props.deauthenticate();
     }
 
-    if (this.props.authenticated) {
-      this.props.getBalance();
+    if (token && this.props.authenticated) {
+      this.props.getAccounts();
     }
   }
 
@@ -49,6 +49,6 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   authenticate,
   deauthenticate,
-  getBalance
+  getAccounts
 })(AppShell);
 

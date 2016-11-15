@@ -18,6 +18,7 @@ export default (app) => {
   app.get('/monzoReturn', monzoController.authorization);
   app.get('/api/logout', logoutController(true));
   app.get('/api/balance', requireAuth, monzoController.getBalance);
+  app.get('/api/accounts', requireAuth, monzoController.getAccounts);
   app.use(cleanUpSession);
   app.use(handleRender(getInitialStoreState));
 };
