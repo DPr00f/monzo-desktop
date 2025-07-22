@@ -72,7 +72,7 @@
     "babel-polyfill": "^6.9.1",
     "body-parser": "^1.15.2",
     "cookie-parser": "^1.4.3",
-    "cookie-session": "^1.2.0",
+    "cookie-session": "^2.1.1",
     "eslint": "^3.9.1",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-config-airbnb-base": "^9.0.0",
